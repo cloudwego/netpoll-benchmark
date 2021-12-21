@@ -20,7 +20,7 @@ import (
 	"net"
 	"strings"
 	"time"
-	
+
 	"github.com/cloudwego/netpoll-benchmark/net/codec"
 	"github.com/cloudwego/netpoll-benchmark/runner"
 )
