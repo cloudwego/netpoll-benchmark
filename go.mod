@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/bytedance/gopkg v0.0.0-20210709064845-3c00f9323f09 // indirect
-	github.com/cloudwego/netpoll v0.0.5-0.20210924092608-f179d35cf2d5
+	github.com/cloudwego/netpoll v0.1.2
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/montanaflynn/stats v0.6.6
 	github.com/panjf2000/gnet v1.5.3

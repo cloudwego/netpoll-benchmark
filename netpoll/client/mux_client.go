@@ -106,14 +106,14 @@ func newMuxConn(conn netpoll.Connection) *muxConn {
 		return nil
 	})
 	// loop write
-	mc.wqueue = mux.NewSharedQueue(mux.SharedSize, conn)
+	mc.wqueue = mux.NewShardQueue(mux.ShardSize, conn)
 	return mc
 }
 
 type muxConn struct {
 	conn   netpoll.Connection
 	rch    chan netpoll.Reader
-	wqueue *mux.SharedQueue // use for write
+	wqueue *mux.ShardQueue // use for write
 
 }
 

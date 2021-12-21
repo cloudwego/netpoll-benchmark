@@ -105,13 +105,13 @@ func (s *muxServer) handler(ctx context.Context, conn netpoll.Connection) (err e
 func newMuxConn(conn netpoll.Connection) *muxConn {
 	mc := &muxConn{}
 	mc.conn = conn
-	mc.wqueue = mux.NewSharedQueue(mux.SharedSize, conn)
+	mc.wqueue = mux.NewShardQueue(mux.ShardSize, conn)
 	return mc
 }
 
 type muxConn struct {
 	conn   netpoll.Connection
-	wqueue *mux.SharedQueue // use for write
+	wqueue *mux.ShardQueue // use for write
 }
 
 // Put puts the buffer getter back to the queue.
