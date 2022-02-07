@@ -25,7 +25,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/cloudwego/netpoll-benchmark/runner/perf"
+	"github.com/cloudwego/kitex-benchmark/perf"
 )
 
 type Runner struct {
