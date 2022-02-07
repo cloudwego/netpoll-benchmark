@@ -17,10 +17,10 @@
 package main
 
 import (
+	"github.com/cloudwego/kitex-benchmark/perf"
 	"github.com/cloudwego/netpoll"
 
 	"github.com/cloudwego/netpoll-benchmark/runner"
-	"github.com/cloudwego/netpoll-benchmark/runner/perf"
 	"github.com/cloudwego/netpoll-benchmark/runner/svr"
 )
 

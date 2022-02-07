@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cloudwego/netpoll-benchmark/runner/perf"
+	"github.com/cloudwego/kitex-benchmark/perf"
 )
 
 const (
