@@ -19,6 +19,7 @@ package svr
 import (
 	"flag"
 	"net/http"
+	_ "net/http/pprof"
 
 	"github.com/cloudwego/netpoll-benchmark/runner"
 )
