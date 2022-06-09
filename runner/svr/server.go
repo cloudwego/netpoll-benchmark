@@ -18,12 +18,18 @@ package svr
 
 import (
 	"flag"
+	"net/http"
 
 	"github.com/cloudwego/netpoll-benchmark/runner"
 )
 
 func Serve(newer runner.ServerNewer) {
 	initFlags()
+	// start pprof server
+	go func() {
+		http.ListenAndServe("127.0.0.1:18888", nil)
+	}()
+
 	svr := newer(runner.Mode(mode))
 	svr.Run(network, address)
 }

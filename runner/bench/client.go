@@ -19,12 +19,18 @@ package bench
 import (
 	"flag"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/cloudwego/netpoll-benchmark/runner"
 )
 
 func Benching(newer runner.ClientNewer) {
+	// start pprof server
+	go func() {
+		http.ListenAndServe("127.0.0.1:19999", nil)
+	}()
+
 	initFlags()
 	// prepare
 	mod := runner.Mode(mode)
