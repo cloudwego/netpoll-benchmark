@@ -34,9 +34,9 @@ function benchmark() {
 
         # server start
         svr=${rp}_reciever
-        if [[ "$1" == "client" ]]; then
-          svr="net_reciever"
-        fi
+#        if [[ "$1" == "client" ]]; then
+#          svr="net_reciever"
+#        fi
         nohup $scpu_cmd ./output/bin/${svr} -addr="$addr" -mode=$mode >>output/log/nohup.log 2>&1 &
         sleep 1
         echo "server $svr running with $scpu_cmd"
