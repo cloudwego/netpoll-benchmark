@@ -8,8 +8,8 @@ require (
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/montanaflynn/stats v0.6.6
 	github.com/panjf2000/gnet v1.5.3
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/tidwall/evio v1.0.8
+	github.com/xtaci/kcp-go/v5 v5.6.1
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
 	golang.org/x/sys v0.0.0-20210809222454-d867a43fc93e // indirect
 	golang.org/x/tools v0.1.5 // indirect

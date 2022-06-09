@@ -5,8 +5,8 @@ body=(1024) # 1KB
 concurrent=(100 500 1000)
 
 # no need to change
-repo=("net" "netpoll")
-ports=(7001 7002)
+repo=("net" "netpoll" "kcp")
+ports=(7001 7002 7005)
 
 . ./scripts/env.sh
 . ./scripts/build.sh
