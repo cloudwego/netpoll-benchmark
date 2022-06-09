@@ -21,7 +21,7 @@ import (
 
 	"github.com/cloudwego/netpoll"
 
-	"github.com/cloudwego/netpoll-benchmark/netpoll/codec"
+	"github.com/cloudwego/netpoll-benchmark/net/codec"
 	"github.com/cloudwego/netpoll-benchmark/runner"
 )
 
@@ -50,22 +50,24 @@ func (s *rpcServer) Run(network, address string) error {
 }
 
 func (s *rpcServer) handler(ctx context.Context, conn netpoll.Connection) (err error) {
-	reader, writer := conn.Reader(), conn.Writer()
+	conner := codec.NewConner(conn)
+	defer codec.PutConner(conner)
 
-	// decode
-	req := &runner.Message{}
-	err = codec.Decode(reader, req)
-	if err != nil {
-		return err
+	for {
+		// decode
+		req := &runner.Message{}
+		err = conner.Decode(req)
+		if err != nil {
+			return err
+		}
+
+		// handler
+		resp := runner.ProcessRequest(reporter, req)
+
+		// encode
+		err = conner.Encode(resp)
+		if err != nil {
+			return err
+		}
 	}
-
-	// handler
-	resp := runner.ProcessRequest(reporter, req)
-
-	// encode
-	err = codec.Encode(writer, resp)
-	if err != nil {
-		return err
-	}
-	return nil
 }
