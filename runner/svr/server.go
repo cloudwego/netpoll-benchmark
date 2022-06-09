@@ -28,7 +28,7 @@ func Serve(newer runner.ServerNewer) {
 	initFlags()
 	// start pprof server
 	go func() {
-		http.ListenAndServe("127.0.0.1:18888", nil)
+		http.ListenAndServe(":18888", nil)
 	}()
 
 	svr := newer(runner.Mode(mode))

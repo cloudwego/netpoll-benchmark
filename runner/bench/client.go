@@ -29,7 +29,7 @@ import (
 func Benching(newer runner.ClientNewer) {
 	// start pprof server
 	go func() {
-		http.ListenAndServe("127.0.0.1:19999", nil)
+		http.ListenAndServe(":19999", nil)
 	}()
 
 	initFlags()
