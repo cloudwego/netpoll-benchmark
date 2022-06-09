@@ -14,29 +14,24 @@
  * limitations under the License.
  */
 
-package svr
+package main
 
 import (
-	"flag"
-
 	"github.com/cloudwego/netpoll-benchmark/runner"
+	"github.com/cloudwego/netpoll-benchmark/runner/bench"
 )
 
-func Serve(newer runner.ServerNewer) {
-	initFlags()
-	svr := newer(runner.Mode(mode))
-	svr.Run(network, address)
+// main is use for routing.
+func main() {
+	bench.Benching(NewClient)
 }
 
-var (
-	address string
-	mode    int
-
-	network string = "tcp"
-)
-
-func initFlags() {
-	flag.StringVar(&address, "addr", "127.0.0.1:9999", "client call address")
-	flag.IntVar(&mode, "mode", 1, "1: echo, 2: idle, 3: mux")
-	flag.Parse()
+func NewClient(mode runner.Mode, network, address string) runner.Client {
+	switch mode {
+	case runner.Mode_Echo, runner.Mode_Idle:
+		return NewClientWithConnpool(network, address)
+	case runner.Mode_Mux:
+		return NewClientWithMux(network, address, 4)
+	}
+	return nil
 }

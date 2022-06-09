@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-package svr
+package main
 
 import (
-	"flag"
-
 	"github.com/cloudwego/netpoll-benchmark/runner"
+	"github.com/cloudwego/netpoll-benchmark/runner/perf"
+	"github.com/cloudwego/netpoll-benchmark/runner/svr"
 )
 
-func Serve(newer runner.ServerNewer) {
-	initFlags()
-	svr := newer(runner.Mode(mode))
-	svr.Run(network, address)
+func main() {
+	svr.Serve(NewServer)
 }
 
-var (
-	address string
-	mode    int
+var reporter = perf.NewRecorder("KCP@Server")
 
-	network string = "tcp"
-)
-
-func initFlags() {
-	flag.StringVar(&address, "addr", "127.0.0.1:9999", "client call address")
-	flag.IntVar(&mode, "mode", 1, "1: echo, 2: idle, 3: mux")
-	flag.Parse()
+func NewServer(mode runner.Mode) runner.Server {
+	switch mode {
+	case runner.Mode_Echo, runner.Mode_Idle:
+		return NewRPCServer()
+	case runner.Mode_Mux:
+		return NewMuxServer()
+	}
+	return nil
 }

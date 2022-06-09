@@ -43,9 +43,9 @@ function benchmark() {
 
         # run client
         cli=${rp}_bencher
-        if [[ "$1" == "server" ]]; then
-          cli="net_bencher"
-        fi
+#        if [[ "$1" == "server" ]]; then
+#          cli="net_bencher"
+#        fi
         echo "client $cli running with $ccpu_cmd"
         $ccpu_cmd ./output/bin/${cli} -name="$rp" -addr="$addr" -mode=$mode -b=$b -c=$c -n=$n
 

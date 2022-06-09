@@ -61,10 +61,10 @@ var (
 
 func initFlags() {
 	flag.StringVar(&name, "name", "", "which repo to bench")
-	flag.StringVar(&address, "addr", "", "client call address")
+	flag.StringVar(&address, "addr", "127.0.0.1:9999", "client call address")
 	flag.IntVar(&echoSize, "b", 1024, "echo size once")
-	flag.IntVar(&concurrent, "c", 1, "call concurrent")
-	flag.Int64Var(&total, "n", 1, "call total nums")
-	flag.IntVar(&mode, "mode", 1, "1: echo, 2: idle, 3: mux")
+	flag.IntVar(&concurrent, "c", 10, "call concurrent")
+	flag.Int64Var(&total, "n", 100, "call total nums")
+	flag.IntVar(&mode, "mode", 3, "1: echo, 2: idle, 3: mux")
 	flag.Parse()
 }
