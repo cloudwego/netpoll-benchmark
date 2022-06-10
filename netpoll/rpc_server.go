@@ -41,7 +41,14 @@ func (s *rpcServer) Run(network, address string) error {
 	}
 
 	// new server
-	eventLoop, err := netpoll.NewEventLoop(s.handler)
+	op := netpoll.WithOnPrepare(func(connection netpoll.Connection) context.Context {
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, ctxconnerkey, &conner{
+			conner: codec.NewConner(connection),
+		})
+		return ctx
+	})
+	eventLoop, err := netpoll.NewEventLoop(s.handler, op)
 	if err != nil {
 		panic(err)
 	}
@@ -49,25 +56,31 @@ func (s *rpcServer) Run(network, address string) error {
 	return eventLoop.Serve(listener)
 }
 
+type connerkey int
+
+const ctxconnerkey connerkey = 1
+
+type conner struct {
+	conner *codec.Conner
+}
+
 func (s *rpcServer) handler(ctx context.Context, conn netpoll.Connection) (err error) {
-	conner := codec.NewConner(conn)
-	defer codec.PutConner(conner)
+	conner := ctx.Value(ctxconnerkey).(*conner).conner
 
-	for {
-		// decode
-		req := &runner.Message{}
-		err = conner.Decode(req)
-		if err != nil {
-			return err
-		}
-
-		// handler
-		resp := runner.ProcessRequest(reporter, req)
-
-		// encode
-		err = conner.Encode(resp)
-		if err != nil {
-			return err
-		}
+	// decode
+	req := &runner.Message{}
+	err = conner.Decode(req)
+	if err != nil {
+		return err
 	}
+
+	// handler
+	resp := runner.ProcessRequest(reporter, req)
+
+	// encode
+	err = conner.Encode(resp)
+	if err != nil {
+		return err
+	}
+	return nil
 }
