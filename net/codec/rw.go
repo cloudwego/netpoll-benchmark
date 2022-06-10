@@ -37,6 +37,15 @@ type Conner struct {
 	rw *bufio.ReadWriter
 }
 
+func NewConner2(conn net.Conn) *Conner {
+	size := pagesize
+	conner := &Conner{}
+	conner.header = make([]byte, 4)
+	// conner.conn = conn
+	conner.rw = bufio.NewReadWriter(bufio.NewReaderSize(conn, size), bufio.NewWriterSize(conn, size))
+	return conner
+}
+
 func NewConner(conn net.Conn) *Conner {
 	size := pagesize
 	if v := connerpool.Get(); v != nil {

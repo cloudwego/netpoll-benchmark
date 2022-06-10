@@ -41,14 +41,19 @@ func (s *rpcServer) Run(network, address string) error {
 	}
 
 	// new server
-	op := netpoll.WithOnPrepare(func(connection netpoll.Connection) context.Context {
-		ctx := context.Background()
-		ctx = context.WithValue(ctx, ctxconnerkey, &conner{
-			conner: codec.NewConner(connection),
-		})
-		return ctx
+	//op := netpoll.WithOnPrepare(func(connection netpoll.Connection) context.Context {
+	//	ctx := context.Background()
+	//	ctx = context.WithValue(ctx, ctxconnerkey, &conner{
+	//		conner: codec.NewConner(connection),
+	//	})
+	//	return ctx
+	//})
+	op := netpoll.WithNewer(func(ctx context.Context, c netpoll.Connection) netpoll.Handler {
+		return &donner{
+			conner: codec.NewConner2(c),
+		}
 	})
-	eventLoop, err := netpoll.NewEventLoop(s.handler, op)
+	eventLoop, err := netpoll.NewEventLoop(nil, op)
 	if err != nil {
 		panic(err)
 	}
@@ -56,20 +61,21 @@ func (s *rpcServer) Run(network, address string) error {
 	return eventLoop.Serve(listener)
 }
 
-type connerkey int
+//
+//type connerkey int
+//
+//const ctxconnerkey connerkey = 1
 
-const ctxconnerkey connerkey = 1
-
-type conner struct {
+type donner struct {
 	conner *codec.Conner
 }
 
-func (s *rpcServer) handler(ctx context.Context, conn netpoll.Connection) (err error) {
-	conner := ctx.Value(ctxconnerkey).(*conner).conner
+func (s *donner) OnRequest(ctx context.Context, conn netpoll.Connection) (err error) {
+	//conner := ctx.Value(ctxconnerkey).(*conner).conner
 
 	// decode
 	req := &runner.Message{}
-	err = conner.Decode(req)
+	err = s.conner.Decode(req)
 	if err != nil {
 		return err
 	}
@@ -78,7 +84,7 @@ func (s *rpcServer) handler(ctx context.Context, conn netpoll.Connection) (err e
 	resp := runner.ProcessRequest(reporter, req)
 
 	// encode
-	err = conner.Encode(resp)
+	err = s.conner.Encode(resp)
 	if err != nil {
 		return err
 	}
