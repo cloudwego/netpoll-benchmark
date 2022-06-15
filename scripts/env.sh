@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# benchmark mode
+args=${1-1}
 # cpu binding
 nprocs=$(getconf _NPROCESSORS_ONLN)
 if [ $nprocs -lt 4 ]; then
