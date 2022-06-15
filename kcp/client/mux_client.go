@@ -61,7 +61,8 @@ func (cli *muxclient) DialTimeout(network, address string, timeout time.Duration
 		return nil, err
 	}
 	sess := c.(*kcp.UDPSession)
-	sess.SetNoDelay(1, 10, 2, 1)
+	sess.SetNoDelay(1, 1, 2, 1)
+	sess.SetWriteDelay(false)
 	sess.SetWindowSize(1024, 1024)
 	return c, err
 }

@@ -45,7 +45,7 @@ func (s *muxServer) Run(network, address string) error {
 	}
 	for {
 		conn, err := listener.Accept()
-		println("connected")
+		log.Printf("connected: %v", conn.RemoteAddr())
 		if err != nil {
 			if strings.Contains(err.Error(), "closed") {
 				return err
@@ -55,8 +55,8 @@ func (s *muxServer) Run(network, address string) error {
 			continue
 		}
 		sess := conn.(*kcp.UDPSession)
-		sess.SetNoDelay(1, 10, 2, 1)
-		sess.SetWriteDelay(true)
+		sess.SetNoDelay(1, 1, 2, 1)
+		sess.SetWriteDelay(false)
 		sess.SetWindowSize(1024, 1024)
 		mc := newMuxConn(conn)
 		go mc.loopRead()
@@ -85,7 +85,7 @@ func (mux *muxConn) loopRead() {
 		if err != nil {
 			panic(fmt.Errorf("mux decode failed: %s", err.Error()))
 		}
-		//log.Printf("recv: %v", len(msg.Message))
+		log.Printf("recv: %v", len(msg.Message))
 		// handler must use another goroutine
 		go func() {
 			// handler
@@ -97,9 +97,8 @@ func (mux *muxConn) loopRead() {
 }
 
 func (mux *muxConn) loopWrite() {
-	for {
-		msg := <-mux.wch
-		//log.Println("send", msg.Message)
+	for msg := range mux.wch {
+		log.Printf("send: %v", len(msg.Message))
 		err := mux.conner.Encode(msg)
 		if err != nil {
 			panic(fmt.Errorf("mux encode failed: %s", err.Error()))
