@@ -18,6 +18,7 @@ package svr
 
 import (
 	"flag"
+	"log"
 	"net/http"
 	_ "net/http/pprof"
 
@@ -32,7 +33,10 @@ func Serve(newer runner.ServerNewer) {
 	}()
 
 	svr := newer(runner.Mode(mode))
-	svr.Run(network, address)
+	err := svr.Run(network, address)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 var (
@@ -43,7 +47,7 @@ var (
 )
 
 func initFlags() {
-	flag.StringVar(&address, "addr", "127.0.0.1:9999", "client call address")
+	flag.StringVar(&address, "addr", ":9999", "client call address")
 	flag.IntVar(&mode, "mode", 1, "1: echo, 2: idle, 3: mux")
 	flag.Parse()
 }

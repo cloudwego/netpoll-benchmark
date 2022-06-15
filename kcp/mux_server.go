@@ -18,6 +18,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net"
 	"strings"
 	"time"
@@ -38,7 +39,10 @@ type muxServer struct{}
 
 func (s *muxServer) Run(network, address string) error {
 	// new listener
-	listener, _ := kcp.Listen(address)
+	listener, err := kcp.Listen(address)
+	if err != nil {
+		return err
+	}
 	var conns = make([]*muxConn, 0, 1024)
 	for {
 		_conn, err := listener.Accept()
@@ -46,6 +50,7 @@ func (s *muxServer) Run(network, address string) error {
 			if strings.Contains(err.Error(), "closed") {
 				return err
 			}
+			log.Println("accept failed: ", err)
 			time.Sleep(10 * time.Millisecond) // too many open files ?
 			continue
 		}
