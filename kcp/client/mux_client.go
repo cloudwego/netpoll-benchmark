@@ -81,8 +81,8 @@ func newMuxConn(conn net.Conn) *muxConn {
 	mc := &muxConn{}
 	mc.conn = conn
 	mc.conner = codec.NewConner(conn)
-	mc.rch = make(chan *runner.Message)
-	mc.wch = make(chan *runner.Message)
+	mc.rch = make(chan *runner.Message, 1024)
+	mc.wch = make(chan *runner.Message, 1024)
 	go mc.loopRead()
 	go mc.loopWrite()
 	return mc

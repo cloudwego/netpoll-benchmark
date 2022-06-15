@@ -43,9 +43,9 @@ func (s *muxServer) Run(network, address string) error {
 	if err != nil {
 		return err
 	}
-	var conns = make([]*muxConn, 0, 1024)
 	for {
-		_conn, err := listener.Accept()
+		conn, err := listener.Accept()
+		println("connected")
 		if err != nil {
 			if strings.Contains(err.Error(), "closed") {
 				return err
@@ -54,12 +54,13 @@ func (s *muxServer) Run(network, address string) error {
 			time.Sleep(10 * time.Millisecond) // too many open files ?
 			continue
 		}
-		sess := _conn.(*kcp.UDPSession)
+		sess := conn.(*kcp.UDPSession)
 		sess.SetNoDelay(1, 10, 2, 1)
 		sess.SetWriteDelay(true)
 		sess.SetWindowSize(1024, 1024)
-		mc := newMuxConn(_conn)
-		conns = append(conns, mc)
+		mc := newMuxConn(conn)
+		go mc.loopRead()
+		go mc.loopWrite()
 	}
 }
 
@@ -68,8 +69,6 @@ func newMuxConn(conn net.Conn) *muxConn {
 	mc.conn = conn
 	mc.conner = codec.NewConner(conn)
 	mc.wch = make(chan *runner.Message)
-	go mc.loopRead()
-	go mc.loopWrite()
 	return mc
 }
 
@@ -86,6 +85,7 @@ func (mux *muxConn) loopRead() {
 		if err != nil {
 			panic(fmt.Errorf("mux decode failed: %s", err.Error()))
 		}
+		//log.Printf("recv: %v", len(msg.Message))
 		// handler must use another goroutine
 		go func() {
 			// handler
@@ -99,6 +99,7 @@ func (mux *muxConn) loopRead() {
 func (mux *muxConn) loopWrite() {
 	for {
 		msg := <-mux.wch
+		//log.Println("send", msg.Message)
 		err := mux.conner.Encode(msg)
 		if err != nil {
 			panic(fmt.Errorf("mux encode failed: %s", err.Error()))
