@@ -20,7 +20,6 @@ import (
 	"bufio"
 	"encoding/binary"
 	"io"
-	"net"
 	"sync"
 	"unsafe"
 
@@ -37,7 +36,7 @@ type Conner struct {
 	rw *bufio.ReadWriter
 }
 
-func NewConner(conn net.Conn) *Conner {
+func NewConner(conn io.ReadWriteCloser) *Conner {
 	size := pagesize
 	if v := connerpool.Get(); v != nil {
 		conner := v.(*Conner)

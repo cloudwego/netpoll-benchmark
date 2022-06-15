@@ -17,6 +17,8 @@
 package main
 
 import (
+	"github.com/lucas-clemente/quic-go"
+
 	"github.com/cloudwego/netpoll-benchmark/runner"
 	"github.com/cloudwego/netpoll-benchmark/runner/bench"
 )
@@ -34,4 +36,12 @@ func NewClient(mode runner.Mode, network, address string) runner.Client {
 		return NewClientWithMux(network, address, 1)
 	}
 	return nil
+}
+
+type quicConn struct {
+	quic.Connection
+}
+
+func (c *quicConn) Close() error {
+	return c.CloseWithError(quic.ApplicationErrorCode(quic.NoError), "")
 }

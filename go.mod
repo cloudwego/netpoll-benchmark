@@ -7,6 +7,7 @@ require (
 	github.com/cloudwego/netpoll v0.1.2
 	github.com/klauspost/reedsolomon v1.9.16 // indirect
 	github.com/kr/pretty v0.2.0 // indirect
+	github.com/lucas-clemente/quic-go v0.27.2 // indirect
 	github.com/montanaflynn/stats v0.6.6
 	github.com/panjf2000/gnet v1.5.3
 	github.com/pkg/errors v0.9.1 // indirect
@@ -19,5 +20,4 @@ require (
 	golang.org/x/sys v0.0.0-20210809222454-d867a43fc93e // indirect
 	golang.org/x/tools v0.1.5 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
-	gopkg.in/yaml.v2 v2.3.0 // indirect
 )
