@@ -56,7 +56,14 @@ type muxclient struct {
 }
 
 func (cli *muxclient) DialTimeout(network, address string, timeout time.Duration) (runner.Conn, error) {
-	return kcp.Dial(address)
+	c, err := kcp.Dial(address)
+	if err != nil {
+		return nil, err
+	}
+	sess := c.(*kcp.UDPSession)
+	sess.SetNoDelay(1, 10, 2, 1)
+	sess.SetWindowSize(1024, 1024)
+	return c, err
 }
 
 func (cli *muxclient) Echo(req *runner.Message) (resp *runner.Message, err error) {
