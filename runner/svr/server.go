@@ -22,6 +22,8 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
+	"github.com/felixge/fgprof"
+
 	"github.com/cloudwego/netpoll-benchmark/runner"
 )
 
@@ -29,6 +31,7 @@ func Serve(newer runner.ServerNewer) {
 	initFlags()
 	// start pprof server
 	go func() {
+		http.DefaultServeMux.Handle("/debug/fgprof", fgprof.Handler())
 		http.ListenAndServe(":18888", nil)
 	}()
 

@@ -5,6 +5,7 @@ go 1.15
 require (
 	github.com/bytedance/gopkg v0.0.0-20210709064845-3c00f9323f09 // indirect
 	github.com/cloudwego/netpoll v0.1.2
+	github.com/felixge/fgprof v0.9.2 // indirect
 	github.com/klauspost/reedsolomon v1.9.16 // indirect
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/lucas-clemente/quic-go v0.27.2 // indirect
@@ -17,7 +18,6 @@ require (
 	github.com/tjfoc/gmsm v1.4.1 // indirect
 	github.com/xtaci/kcp-go v5.4.20+incompatible // indirect
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
-	golang.org/x/sys v0.0.0-20210809222454-d867a43fc93e // indirect
 	golang.org/x/tools v0.1.5 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 )

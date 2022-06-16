@@ -23,12 +23,15 @@ import (
 	_ "net/http/pprof"
 	"time"
 
+	"github.com/felixge/fgprof"
+
 	"github.com/cloudwego/netpoll-benchmark/runner"
 )
 
 func Benching(newer runner.ClientNewer) {
 	// start pprof server
 	go func() {
+		http.DefaultServeMux.Handle("/debug/fgprof", fgprof.Handler())
 		http.ListenAndServe(":19999", nil)
 	}()
 
