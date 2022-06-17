@@ -56,7 +56,7 @@ func (s *muxServer) Run(network, address string) error {
 		}
 		sess := conn.(*kcp.UDPSession)
 		sess.SetMtu(65535)
-		sess.SetNoDelay(1, 1, 2, 1)
+		sess.SetNoDelay(0, 1, 0, 1)
 		sess.SetWriteDelay(false)
 		sess.SetWindowSize(1024, 1024)
 		mc := newMuxConn(conn)

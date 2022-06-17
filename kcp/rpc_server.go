@@ -39,7 +39,7 @@ func (s *rpcServer) Run(network, address string) error {
 	// new listener
 	listener, _ := kcp.Listen(address)
 	for {
-		_conn, err := listener.Accept()
+		conn, err := listener.Accept()
 		if err != nil {
 			if strings.Contains(err.Error(), "closed") {
 				return err
@@ -48,6 +48,11 @@ func (s *rpcServer) Run(network, address string) error {
 			continue
 		}
 
+		sess := conn.(*kcp.UDPSession)
+		sess.SetMtu(65535)
+		sess.SetNoDelay(0, 1, 0, 1)
+		sess.SetWriteDelay(false)
+		sess.SetWindowSize(1024, 1024)
 		go func(conn net.Conn) {
 			conner := codec.NewConner(conn)
 			defer codec.PutConner(conner)
@@ -57,7 +62,7 @@ func (s *rpcServer) Run(network, address string) error {
 				err = s.handler(conner)
 			}
 			conn.Close()
-		}(_conn)
+		}(conn)
 	}
 }
 

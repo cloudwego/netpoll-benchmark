@@ -44,7 +44,15 @@ type poolclient struct {
 }
 
 func (cli *poolclient) DialTimeout(network, address string, timeout time.Duration) (runner.Conn, error) {
-	return kcp.Dial(address)
+	c, err := kcp.Dial(address)
+	if err != nil {
+		return nil, err
+	}
+	sess := c.(*kcp.UDPSession)
+	sess.SetNoDelay(0, 1, 0, 1)
+	sess.SetWriteDelay(false)
+	sess.SetWindowSize(1024, 1024)
+	return c, err
 }
 
 func (cli *poolclient) Echo(req *runner.Message) (resp *runner.Message, err error) {
