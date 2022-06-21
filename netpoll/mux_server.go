@@ -44,8 +44,9 @@ func (s *muxServer) Run(network, address string) error {
 	}
 
 	// new server
-	opt := netpoll.WithOnPrepare(s.prepare)
-	eventLoop, err := netpoll.NewEventLoop(s.handler, opt)
+	opt := netpoll.WithOnEventFactory(&muxFactory{})
+
+	eventLoop, err := netpoll.NewEventLoop(nil, opt)
 	if err != nil {
 		panic(err)
 	}
@@ -53,19 +54,25 @@ func (s *muxServer) Run(network, address string) error {
 	return eventLoop.Serve(listener)
 }
 
-type connkey struct{}
 
-var ctxkey connkey
+type muxFactory struct{}
 
-func (s *muxServer) prepare(conn netpoll.Connection) context.Context {
-	mc := newMuxConn(conn)
-	ctx := context.WithValue(context.Background(), ctxkey, mc)
-	return ctx
+func (s *muxFactory) NewOnEvent(connection netpoll.Connection) netpoll.OnEvent {
+	return &muxEvent{
+		mc: newMuxConn(connection),
+	}
 }
 
-func (s *muxServer) handler(ctx context.Context, conn netpoll.Connection) (err error) {
-	mc := ctx.Value(ctxkey).(*muxConn)
-	reader := conn.Reader()
+type muxEvent struct{
+	mc *muxConn
+}
+
+func (s *muxEvent) OnActive(ctx context.Context, connection netpoll.Connection) error {
+	return nil
+}
+
+func (s *muxEvent) OnData(ctx context.Context, connection netpoll.Connection) error {
+	reader := connection.Reader()
 
 	bLen, err := reader.Peek(4)
 	if err != nil {
@@ -95,10 +102,14 @@ func (s *muxServer) handler(ctx context.Context, conn netpoll.Connection) (err e
 		if err != nil {
 			panic(fmt.Errorf("netpoll encode failed: %s", err.Error()))
 		}
-		mc.Put(func() (buf netpoll.Writer, isNil bool) {
+		s.mc.Put(func() (buf netpoll.Writer, isNil bool) {
 			return writer, false
 		})
 	}()
+	return nil
+}
+
+func (s *muxEvent) OnClose(ctx context.Context, connection netpoll.Connection) error {
 	return nil
 }
 
