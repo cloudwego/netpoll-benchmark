@@ -18,6 +18,7 @@ package main
 
 import (
 	"fmt"
+    "io"
 	"net"
 	"strings"
 	"time"
@@ -58,6 +59,7 @@ func newMuxConn(conn net.Conn) *muxConn {
 	mc.conn = conn
 	mc.conner = codec.NewConner(conn)
 	mc.wch = make(chan *runner.Message)
+    mc.ech = make(chan string)
 	go mc.loopRead()
 	go mc.loopWrite()
 	return mc
@@ -67,6 +69,7 @@ type muxConn struct {
 	conn   net.Conn
 	conner *codec.Conner
 	wch    chan *runner.Message
+    ech    chan string
 }
 
 func (mux *muxConn) loopRead() {
@@ -74,8 +77,14 @@ func (mux *muxConn) loopRead() {
 		msg := &runner.Message{}
 		err := mux.conner.Decode(msg)
 		if err != nil {
+            if err == io.EOF {
+                mux.ech <- "EOF"
+                // connection is closed.
+                break;
+            }
 			panic(fmt.Errorf("mux decode failed: %s", err.Error()))
 		}
+
 		// handler must use another goroutine
 		go func() {
 			// handler
@@ -88,10 +97,15 @@ func (mux *muxConn) loopRead() {
 
 func (mux *muxConn) loopWrite() {
 	for {
-		msg := <-mux.wch
-		err := mux.conner.Encode(msg)
-		if err != nil {
-			panic(fmt.Errorf("mux encode failed: %s", err.Error()))
+        select {
+		    case msg := <-mux.wch:
+		        err := mux.conner.Encode(msg)
+		        if err != nil {
+			        panic(fmt.Errorf("mux encode failed: %s", err.Error()))
+                }
+            case <-mux.ech:
+                return
 		}
 	}
 }
+

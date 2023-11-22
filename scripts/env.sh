@@ -51,8 +51,11 @@ function benchmark() {
 
         # stop server
         pid=$(ps -ef | grep $svr | grep -v grep | awk '{print $2}')
-        disown $pid
-        kill -9 $pid
+        if [[ -n "$pid" ]]; then
+            disown $pid
+            kill -9 $pid
+        fi
+
         sleep 1
       done
     done

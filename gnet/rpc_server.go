@@ -20,7 +20,7 @@ import (
 	"fmt"
 
 	"github.com/panjf2000/gnet"
-	"github.com/panjf2000/gnet/pool/goroutine"
+	"github.com/panjf2000/gnet/pkg/pool/goroutine"
 
 	"github.com/cloudwego/netpoll-benchmark/gnet/codec"
 	"github.com/cloudwego/netpoll-benchmark/runner"
