@@ -110,6 +110,7 @@ CPU: 推荐配置 >=20核, 最低要求 >=4核
 
 * 压测脚本默认需要 20核 CPU, 具体在脚本的 `taskset -c ...` 部分, 可以修改或删除。
 
+
 ## 参考数据 (echo size 1KB)
 
 相关说明:
@@ -118,10 +119,10 @@ CPU: 推荐配置 >=20核, 最低要求 >=4核
 
 ### 配置
 
-* CPU:    Intel(R) Xeon(R) Gold 5118 CPU @ 2.30GHz
+* CPU:    Intel(R) Xeon(R) CPU E5-2630 v4 @ 2.20GHz
    * 运行限定 server 4CPU, client 16CPU
 * OS:     Debian 5.4.56.bsk.1-amd64 x86_64 GNU/Linux
-* Go:     1.15.4
+* Go:     go1.21.4
 
 ### [测试场景 1](#测试场景-1)
 
