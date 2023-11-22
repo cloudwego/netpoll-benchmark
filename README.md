@@ -110,6 +110,10 @@ CPU: 推荐配置 >=20核, 最低要求 >=4核
 
 * 压测脚本默认需要 20核 CPU, 具体在脚本的 `taskset -c ...` 部分, 可以修改或删除。
 
+软件依赖: Python3 + matplotlib 用于绘图
+
+* 在运行压测前， 可以使用 pip3 install matplotlib 安装依赖
+
 
 ## 参考数据 (echo size 1KB)
 
@@ -121,7 +125,7 @@ CPU: 推荐配置 >=20核, 最低要求 >=4核
 
 * CPU:    Intel(R) Xeon(R) CPU E5-2630 v4 @ 2.20GHz
    * 运行限定 server 4CPU, client 16CPU
-* OS:     Debian 5.4.56.bsk.1-amd64 x86_64 GNU/Linux
+* OS:     Debian 6.4.7-amd64 x86_64 GNU/Linux
 * Go:     go1.21.4
 
 ### [测试场景 1](#测试场景-1)
